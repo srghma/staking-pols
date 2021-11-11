@@ -1,6 +1,8 @@
 output: mythx.json
 format: json
 
+# https://mythx.io/
+
 analyze:
     mode: quick
     create-group: true

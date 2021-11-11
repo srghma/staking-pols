@@ -2,6 +2,10 @@ import hre from "hardhat";
 import { Artifact } from "hardhat/types";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signer-with-address";
 
+// https://github.com/ethers-io/ethers.js/blob/b1458989761c11bf626591706aa4ce98dae2d6a9/packages/abstract-signer/src.ts/index.ts?_pjax=%23js-repo-pjax-container%2C%20div%5Bitemtype%3D%22http%3A%2F%2Fschema.org%2FSoftwareSourceCode%22%5D%20main%2C%20%5Bdata-pjax-container%5D#L58
+
+// https://github.com/nomiclabs/hardhat/blob/2783718b282aefff8abeec856cf1e41aab83eadf/packages/hardhat-ethers/src/signers.ts?_pjax=%23js-repo-pjax-container%2C%20div%5Bitemtype%3D%22http%3A%2F%2Fschema.org%2FSoftwareSourceCode%22%5D%20main%2C%20%5Bdata-pjax-container%5D#L3
+
 import { PolkastarterToken } from "../typechain/PolkastarterToken";
 import { RewardToken } from "../typechain/RewardToken";
 import { PolsStake } from "../typechain/PolsStake";
@@ -21,7 +25,7 @@ const { deployContract } = hre.waffle;
 // const DECMULBN = BigNumber.from(10).pow(DECIMALS);
 
 const PERIOD_HARDHAT = 24 * 60 * 60; // 1 day (simulated time periods) on hardhat
-const PERIOD_BLOCKCHAIN = 60; // 1 minute on "real" blockchains
+const PERIOD_BLOCKCHAIN = 60; // 1 minute on "real" blockchains????
 const timePeriod = hre.network.name == "hardhat" ? PERIOD_HARDHAT : PERIOD_BLOCKCHAIN;
 const lockPeriod = 7 * timePeriod;
 
@@ -59,10 +63,11 @@ describe("PolsStake : " + filenameHeader, function () {
       console.error("ERROR: Balance too low");
       process.exit(1);
     }
+    ////////
 
     const stakeTokenArtifact: Artifact = await hre.artifacts.readArtifact("PolkastarterToken");
     this.stakeToken = <PolkastarterToken>(
-      await deployContract(this.signers.admin, stakeTokenArtifact, [this.signers.admin.address])
+      await deployContract(this.signers.admin, stakeTokenArtifact, [this.signers.admin.address]) // _distributionContract
     );
     await this.stakeToken.deployed();
     console.log("stakeToken     deployed to :", this.stakeToken.address);
@@ -76,7 +81,7 @@ describe("PolsStake : " + filenameHeader, function () {
     // deploy staking contract
     const stakeArtifact: Artifact = await hre.artifacts.readArtifact("PolsStake");
     this.stake = <PolsStake>(
-      await deployContract(this.signers.admin, stakeArtifact, [this.stakeToken.address, lockPeriod])
+      await deployContract(this.signers.admin, stakeArtifact, [this.stakeToken.address, lockPeriod]) // this.stakeToken.address !!!
     );
     await this.stake.deployed();
     console.log("stake contract deployed to :", this.stake.address);

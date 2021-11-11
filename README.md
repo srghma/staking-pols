@@ -1,56 +1,65 @@
+    "@codechecks/client": "^0.1.11", various
+1   "@commitlint/cli": "^13.1.0",
+2   "cz-conventional-changelog": "^3.3.0",
+    "fs-extra": "^10.0.0", hard?
+    "solhint": "^3.3.6", e hint, mythx global?
+
+
 # Staking Contract with Time-based Rewards
 
 ## Overview
 
-This repo implements a basic staking contract with some added functionality for stake-time based rewards.
+This repo implements a basic staking!!! contract with some added functionality for stake-time based rewards.
 
-This staking contract shall eventually be the basis for an improved incentive mechanism for a rewards-based lottery ticket allocation.
+This staking contract shall eventually! be the basis for an improved incentive mechanism for a rewards-based lottery ticket allocation.
 
+lottery ticket allocation on bl?
 ---
 
 ## Deployment Parameter
 
-At time of deployment, the contract address of the token which can be staked needs to be provided as well as the time (in seconds) the staked token shall be locked.
+At time of deployment, the "contract address of the token which can be staked" needs to be provided as well as the "time" (in seconds) the "staked token shall be locked".
 
-After deployment, (optionally) a ERC20 rewards token can be set and "reward tokens" provided to the contract, which can be claimed later by the users.
+After deployment, (optionally) a "ERC20 rewards token"????TODO can be set and "reward tokens" provided to the contract, which can be claimed later by the users.
 
+with what fn?
 ---
 
 ## User functions (Basic features)
 
 ### stake(amount)
 
-Deposit the specified amount of POLS token into the staking contract. In our context POLS is the "staking token".
+Deposit the specified amount of POLS! token into the staking contract. In our context POLS is the "staking token".
 
-The user has to approve POLS token first by calling the `approve()` function on the POLS ERC20 token contract, before he can call the stake function.
+The user has to approve POLS token first by calling the `approve()`! function on the POLS ERC20 token contract, before he can call the stake function.
 
-Every time a user stakes token, either for the first time or adding tokens later, a new lockTimePeriod starts.
+Every time a user stakes token, either for the first time or adding tokens later, a **new lockTimePeriod starts**.
 
-The `unlockTime` will be calculcalted at the time of staking (current time + `lockTimePeriod`) and stored for every user individually.
+The **`unlockTime` will be calculcalted** at the time of staking (current time + **`lockTimePeriod`**) and stored for every user individually.
 
 ### stakeAmount_msgSender() returns (uint256 amount)
 
 Returns the amount of staked token (POLS) for `msg.sender`
 
 ### stakeTime_msgSender() returns (uint time)
+ why needed
+Returns the unix epoch time (in seconds) when the user executed a transaction (stake or unstake???) the last time.
 
-Returns the unix epoch time (in seconds) when the user executed a transaction (stake or unstake) the last time.
-
-### getUnlockTime_msgSender returns (uint time)
+### ! getUnlockTime_msgSender returns (uint time)
 
 Returns the time when the user's token will be unlocked and can be withdrawn.
 
 ### withdraw(uint256 amount) returns (uint256 amount)
 
-If `lockTimePeriod` had been set, this time period has to be expired since the last `stake` transaction, before the staked tokens can be withdrawn.
+If `lockTimePeriod` had been set, lockTimePeriod !has to be expired! since the last `stake` transaction, before the staked tokens can be **withdrawn**.
 
 There is no need for the user to explicitly 'unlock' the staked token, they will 'automatically' be unlocked after the `lockTimePeriod` expired.
-
+ok
 `withdraw(amount)`, return `amount` staked tokens to the user's account.
 
 The lock period will not be extended, unlock time will stay unchanged.
-
-All rewards will stay within the contract.
+ok only stake
+All internal rewards??? will stay within the contract.???
 
 ### withdrawAll() returns (uint256 amount)
 
@@ -60,18 +69,18 @@ As `withdraw(amount)`, but all staked tokens will be returned to the user's acco
 
 ## User Reward functions
 
-While the user has staked token, 'internal rewards' are being earned.
+While the user has staked token, 'internal rewards'!!! are being earned.
 
-`stakeRewardEndTime` defines the time when reward scheme ends and no more 'internal rewards' are being earned for staking token.
+`stakeRewardEndTime` defines the time when **reward scheme ends** and no more 'internal rewards' are being earned for staking token.
 
 ### userClaimableRewards_msgSender() returns (uint256 amount)
 
 Over time the user earns 'internal rewards' which are (to begin with) only tracked internally within the contract.
-`userClaimableRewards` is the ongoing reward allocation = amount of staked token \* the time since the last stake/unstake transaction was executed.
+`userClaimableRewards` is the ongoing **reward allocation = amount of staked token \* the time since the last stake/unstake** transaction was executed.
 
 ### userAccumulatedRewards_msgSender() returns (uint256 amount)
 
-Whenever the staking amount changes, the past earned rewards (= `userClaimableRewards`) are being added to `userAccumulatedRewards`. Then the `stakeTime` is reset to the current time, and `userClaimableRewards` are being calculated anew based on the new time period \* new staked token amount.
+**Whenever the staking amount changes**, the past earned rewards (= `userClaimableRewards`) are being added to `userAccumulatedRewards`. Then the **`stakeTime`** is reset to the current time, and `userClaimableRewards` are being calculated anew based on the new time period \* new staked token amount.
 
 ### userTotalRewards_msgSender() returns (uint256 amount)
 
@@ -79,11 +88,11 @@ Whenever the staking amount changes, the past earned rewards (= `userClaimableRe
 
 ### claim()
 
-Calculates the amount of reward tokens for `msg.sender` based on `userTotalRewards / stakeRewardFactor`.
+Calculates the amount of reward tokens for `msg.sender` based on `userTotalRewards / stakeRewardFactor!!!`.
 
 If enough reward tokens are within the contract, the 'reward tokens' are being transferred to the account of `msg.sender`.
 
-After `claim` all 'internal rewards' have been converted to reward tokens and `userAccumulatedRewards` as well as `userClaimableRewards` will be 0 thereafter.
+After `claim` all 'internal rewards' have been converted to reward tokens and **`userAccumulatedRewards` as well as `userClaimableRewards` will be 0 thereafter**.
 
 ---
 
@@ -93,11 +102,11 @@ The deployer account is being assigned the `DEFAULT_ADMIN_ROLE` which is allowed
 
 ### setLockTimePeriod(uint48 \_lockTimePeriod)
 
-Sets the time (in seconds) a user has to wait after the last stake transaction until he can withdraw the staked tokens.
+Sets the time (in seconds) a user has to wait **after the last stake transaction** until he can withdraw the staked tokens.
 
 `lockTimePeriod` can be changed any time and there are no restrictions to the value.
 
-As `unlockTime` will be calculcalted at the time of staking (current time + `lockTimePeriod`) and stored for every user individually, `lockTimePeriod` can be changed while users have staked token, but it will only affect stakes after `lockTimePeriod` has been changed.
+As `unlockTime` **will be calculcalted at the time of staking** (current time + `lockTimePeriod`) and stored for every user individually, `lockTimePeriod` can be changed while users have staked token, but it will only affect stakes after `lockTimePeriod` has been changed.
 
 ### setRewardToken(address)
 
@@ -111,13 +120,13 @@ If the previous rewards token is identical to the staking token, then only the d
 
 ### setStakeRewardFactor(uint256)
 
-The 'internal rewards' are just accumulated `stakeAmount` \* `stakeTime`.
+The 'internal rewards' points are just accumulated `stakeAmount` \* `stakeTime`.
 
-Example 1000 POLS token staked for 1 day : 1000 \* 24 \* 60 \* 60 = 604800000
+Example **1000 POLS token staked for 1 day** : 1000 \* 24 \* 60 \* 60 = 604800000
 
-(This example assumes that stake token uses the same decimals as reward token, otherwise it has to be accounted for when setting `stakeRewardFactor`.)
+(This example assumes that stake token uses the same decimals as reward token, **otherwise it has to be accounted for when setting `stakeRewardFactor`.**???)
 
-If this value is being set as `setStakeRewardFactor` then a user will able to claim/mint 1 reward token after staking 1000 staking token for 1 week.
+If 1000 is being set as `setStakeRewardFactor` then a user will able to claim/mint **1 reward token** after staking 1000 staking token for 1 week.
 
 A user would also be able to claim/mint 1 reward token after staking 7000 staking token for 1 day.
 
@@ -131,10 +140,12 @@ Set the time when the reward scheme ends and no more 'internal rewards' are bein
 
 ### burnRewards(address from, uint256 amount) public onlyRole(BURNER_ROLE)
 
-`burnRewards()` allows an external contract which has been assigned the `BURNER_ROLE` to subtract a certain amount of 'internal rewards' of a specified account.
+`burnRewards()` allows an external contract which has been assigned the `BURNER_ROLE` to **subtract a certain amount of 'internal rewards' of a specified account**.
 
-This would allow the token sale contract to reduce the amount of 'internal rewards' of a user who was successful to claim a token allocation.
-If the probability to win the token lottery is based on the 'internal rewards', burning internal rewards can be used to setup a mechnism to decrease the chance of a user to win again who just won and received a token allocation.
+This would allow the token sale contract to reduce the amount of 'internal rewards' of a user who was successful to claim a token allocation.???
+If the **probability to win the token lottery is based on the 'internal rewards'**???, burning internal rewards can be used to setup a mechnism to decrease the chance of a user to win again (who just won and received a token allocation).
+
+so this func is exec every time after each successfull allocation? I thought they execlude users who just won in the lottery gem
 
 ===============================================================================
 

@@ -134,7 +134,7 @@ contract PolsStake is AccessControl, ReentrancyGuard {
         address oldRewardToken = rewardToken;
         uint256 rewardBalance = getRewardTokenBalance(); // balance of oldRewardToken
         if (rewardBalance > 0) {
-            IERC20(oldRewardToken).safeTransfer(msg.sender, rewardBalance);
+            IERC20(oldRewardToken).safeTransfer(msg.sender, rewardBalance); // library SafeERC20
         }
         rewardToken = newRewardToken;
         emit RewardTokenChanged(oldRewardToken, rewardBalance, newRewardToken);
@@ -307,6 +307,15 @@ contract PolsStake is AccessControl, ReentrancyGuard {
 
         user.unlockTime = toUint48(block.timestamp + lockTimePeriod);
 
+        // function safeTransferFrom(
+        //     IERC20 token,
+        //     address from,
+        //     address to,
+        //     uint256 value
+        // ) internal {
+        //     _callOptionalReturn(token, abi.encodeWithSelector(token.transferFrom.selector, from, to, value));
+        // }
+    
         // using SafeERC20 for IERC20 => will revert in case of error
         IERC20(stakingToken).safeTransferFrom(msg.sender, address(this), _amount);
 
